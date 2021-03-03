@@ -1,7 +1,6 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -12,31 +11,22 @@ public abstract class Crawler {
     private List<String> html;
     private String title;
 
-    public Crawler(String link) {
-        try {
-            URL url= new URL(link);
-            URLConnection uc = url.openConnection();
-            uc.addRequestProperty("User-Agent","Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)");
-            uc.connect();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(uc.getInputStream()));
-            
-            this.html = new ArrayList<>();
-            String line = "";
-            while((line = reader.readLine()) != null) {
-                this.html.add(line);
-            }
-            setTitle();
-            
-            reader.close();
-
-            parseHTML();
+    public Crawler(String link) throws IOException {
+        URL url= new URL(link);
+        URLConnection uc = url.openConnection();
+        uc.addRequestProperty("User-Agent","Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)");
+        uc.connect();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(uc.getInputStream()));
+        
+        this.html = new ArrayList<>();
+        String line = "";
+        while((line = reader.readLine()) != null) {
+            this.html.add(line);
         }
-        catch(MalformedURLException e) {
-            e.printStackTrace();
-        }
-        catch(IOException e) {
-            e.printStackTrace();
-        }
+        setTitle();
+        parseHTML();
+        
+        reader.close();
     }
     
     private void setTitle() {
@@ -67,6 +57,18 @@ public abstract class Crawler {
 
     public List<String> getHTML() {
         return this.html;
+    }
+
+    public String fileNameFilter(String input) {
+        StringBuilder sb = new StringBuilder(input);
+        String[] chars = {"\\", "/", ":", "*", "?", "\"", "<", ">", "|"};
+        for(String c: chars) {
+            int i=0;
+            while((i = sb.indexOf(c)) != -1) {
+                sb.replace(i, i+1, "_");
+            }
+        }
+        return sb.toString();
     }
 
     public abstract void parseHTML();

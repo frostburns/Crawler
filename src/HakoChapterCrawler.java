@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.io.IOException;
 
 public class HakoChapterCrawler extends Crawler {
 
@@ -7,7 +8,7 @@ public class HakoChapterCrawler extends Crawler {
     private List<String> content;
     private String chapterTitle;
 
-    public HakoChapterCrawler(String chapter) {
+    public HakoChapterCrawler(String chapter) throws IOException {
         super(chapter);
         this.chapterTitle = super.getTitle().substring(super.getTitle().indexOf(" - ")+3,
         super.getTitle().indexOf(" - Cổng Light Novel"));
@@ -19,9 +20,6 @@ public class HakoChapterCrawler extends Crawler {
         for(int i=0; i<html.size(); ++i) {
             if(html.get(i).equals("<div id=\"chapter-content\" class=\"long-text no-select\">")) {
                 for(String line: html.get(i+1).split("</p><p id=\"[0-9]+\">")) {
-                    if(line.startsWith("<img")) {
-                        line = getLinkFrom(line);
-                    }
                     content.add(line);
                 }
 
@@ -30,9 +28,9 @@ public class HakoChapterCrawler extends Crawler {
                 line = content.get(content.size()-1);
                 content.set(content.size()-1, line.substring(0, line.length()-4));
 
-                for(String l: content) {
-                    System.out.println(l);
-                }
+                // for(String l: content) {
+                //     System.out.println(l);
+                // }
 
                 return;
             }
