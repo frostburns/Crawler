@@ -6,15 +6,17 @@ public class Text {
     private String text;
     private boolean bold;
     private boolean italic;
+    private boolean underline;
 
     public Text(String text) {
-        this(text, false, false);
+        this(text, false, false, false);
     }
 
-    public Text(String text, boolean bold, boolean italic) {
+    public Text(String text, boolean bold, boolean italic, boolean underline) {
         this.text = text;
         this.bold = bold;
         this.italic = italic;
+        this.underline = underline;
     }
 
     public void setBold(boolean state) {
@@ -23,6 +25,10 @@ public class Text {
 
     public void setItalic(boolean state) {
         this.italic = state;
+    }
+
+    public void setUnderline(boolean state) {
+        this.underline = state;
     }
 
     public String getText() {
@@ -37,26 +43,76 @@ public class Text {
         return this.italic;
     }
 
-    // if the text is both bold & italic, i'm dead :)
-    public static List<Text> parseToText(String line) {
+    public boolean isUnderline() {
+        return this.underline;
+    }
+
+    public static List<Text> parsePlainText(String line) {
         List<Text> ret = new ArrayList<>();
-        for(int i=0; i<line.length(); ++i) {
-            ret.add(null);
+        
+        for(String sentence: line.split("<[/a-z]+>")) {
+            ret.add(new Text(sentence));
         }
 
+        return ret;
+    }
+
+    public static List<Text> parseText(String line) {
+        List<Text> ret = new ArrayList<>();
+        for(int i=0; i<line.length(); ++i) {
+            ret.add(new Text(line.substring(i, i+1)));
+        }
+
+        List<Integer> toRemove = new ArrayList<>();
+        
         int i = 0;
         int begin = 0;
         while((i = line.indexOf("<strong>", begin)) != -1) {
             int j = line.indexOf("</strong>", begin);
-            ret.set(i, new Text(line.substring(i+8, j), true, false));
-            begin = j+8;
+            for(int index=i+8; index<j; ++index) {
+                ret.get(index).setBold(true);
+            }
+            begin = j+9;
+            toRemove.add(i);
+            toRemove.add(i+8);
+            toRemove.add(j);
+            toRemove.add(j+9);
         }
-
+        
+        i = 0;
         begin = 0;
         while((i = line.indexOf("<em>", begin)) != -1) {
             int j = line.indexOf("</em>", begin);
-            ret.set(i, new Text(line.substring(i+4, j), false, true));
+            for(int index=i+4; index<j; ++index) {
+                ret.get(index).setItalic(true);
+            }
+            begin = j+5;
+            toRemove.add(i);
+            toRemove.add(i+4);
+            toRemove.add(j);
+            toRemove.add(j+5);
+        }
+        
+        i = 0;
+        begin = 0;
+        while((i = line.indexOf("<u>", begin)) != -1) {
+            int j = line.indexOf("</u>", begin);
+            for(int index=i+3; index<j; ++index) {
+                ret.get(index).setUnderline(true);
+            }
             begin = j+4;
+            toRemove.add(i);
+            toRemove.add(i+3);
+            toRemove.add(j);
+            toRemove.add(j+4);
+        }
+
+        for(i=0; i<toRemove.size(); i+=2) {
+            begin = toRemove.get(i);
+            int end = toRemove.get(i+1);
+            for(int index=begin; index<end; ++index) {
+                ret.set(index, null);
+            }
         }
 
         return ret;

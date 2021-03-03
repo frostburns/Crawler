@@ -1,16 +1,30 @@
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.concurrent.TimeUnit;
 
 public abstract class Crawler {
 
+    private static final int threshold = 5;
     private String title;
 
-    public Crawler(String link) throws IOException {
-        URLConnection uc = new URL(link).openConnection();
-        uc.addRequestProperty("User-Agent","Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)");
-        uc.connect();
-        parseURL(uc);
+    public Crawler(String link) throws InterruptedException, IOException {
+        int count = 0;
+        while(true) {
+            try {
+                URLConnection uc = new URL(link).openConnection();
+                uc.addRequestProperty("User-Agent","Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)");
+                uc.connect();
+                parseURL(uc);
+                break;
+            }
+            catch(IOException e) {
+                if(++count == threshold) {
+                    throw e;
+                }
+                TimeUnit.SECONDS.sleep(10);
+            }
+        }
     }
     
     public void setTitle(String title) {

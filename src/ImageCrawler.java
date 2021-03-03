@@ -7,17 +7,33 @@ import java.awt.image.BufferedImage;
 
 import javax.imageio.ImageIO;
 
+import org.apache.poi.xwpf.usermodel.Document;
+
 public class ImageCrawler extends Crawler {
 
     private BufferedImage image;
     private String link;
+    private int imageType;
     
-    public ImageCrawler(String link) throws IOException {
+    public ImageCrawler(String link) throws InterruptedException, IOException {
         super(link);
         this.link = link;
         setTitle(link.substring(link.lastIndexOf("/")+1));
-        // System.out.println(getTitle());
-        // System.out.println(getAspectRatio());
+        setImageType(link.substring(link.lastIndexOf(".")));
+        System.out.println(getTitle());
+    }
+
+    private void setImageType(String suffix) {
+        if(suffix.equals(".jpg")) {
+            this.imageType = Document.PICTURE_TYPE_JPEG;
+        }
+        if(suffix.equals(".png")) {
+            this.imageType = Document.PICTURE_TYPE_PNG;
+        }
+    }
+
+    public int getImageType() {
+        return this.imageType;
     }
 
     public void parseURL(URLConnection uc) throws IOException {

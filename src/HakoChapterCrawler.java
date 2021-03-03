@@ -1,12 +1,12 @@
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.io.IOException;
 
 public class HakoChapterCrawler extends HakoCrawler {
 
     private List<String> content;
 
-    public HakoChapterCrawler(String chapter) throws IOException {
+    public HakoChapterCrawler(String chapter) throws InterruptedException, IOException {
         super(chapter);
         for(String line: getHTML()) {
             if(line.startsWith("<title>")) {
@@ -15,7 +15,7 @@ public class HakoChapterCrawler extends HakoCrawler {
                 break;
             }
         }
-        // System.out.println(getTitle());
+        System.out.println(getTitle());
     }
     
     public void parseHTML() {

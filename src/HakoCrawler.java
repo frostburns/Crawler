@@ -10,8 +10,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.util.Units;
-import org.apache.poi.xwpf.usermodel.Document;
 import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
+import org.apache.poi.xwpf.usermodel.UnderlinePatterns;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
@@ -22,7 +22,7 @@ public class HakoCrawler extends Crawler {
     private List<String> html;
     private List<String> chapters;
     
-    public HakoCrawler(String novel) throws IOException {
+    public HakoCrawler(String novel) throws InterruptedException, IOException {
         super(novel);
         for(String line: html) {
             if(line.startsWith("<title>")) {
@@ -83,20 +83,32 @@ public class HakoCrawler extends Crawler {
             for (String line : crawler.getContent()) {
                 paragraph = document.createParagraph();
                 if (line.startsWith("<img")) {
-                    ImageCrawler image = new ImageCrawler(getLinkFrom(line));
                     run = paragraph.createRun();
-                    run.addPicture(image.getInputStream(), Document.PICTURE_TYPE_JPEG, image.getTitle(),
-                                    Units.toEMU(450), Units.toEMU(450 / image.getAspectRatio()));
+                    try {
+                        ImageCrawler image = new ImageCrawler(getLinkFrom(line));
+                        int width = Math.min(450, image.getWidth());
+                        run.addPicture(image.getInputStream(), image.getImageType(), image.getTitle(),
+                                        Units.toEMU(width), Units.toEMU(width / image.getAspectRatio()));
+                    }
+                    catch (NullPointerException e) {
+                        run.setText("Ảnh lỗi cmnr T_T");
+                        run.setFontFamily("Times New Roman");
+                        run.setFontSize(10);
+                    }
                 }
                 else {
-                    List<Text> sentences = Text.parseToText(line);
+                    List<Text> sentences = Text.parseText(line);
                     for(Text sentence: sentences) {
                         if(sentence != null) {
                             run = paragraph.createRun();
                             run.setText(sentence.getText());
                             run.setFontFamily("Times New Roman");
+                            run.setFontSize(12);
                             run.setBold(sentence.isBold());
                             run.setItalic(sentence.isItalic());
+                            if(sentence.isUnderline()) {
+                                run.setUnderline(UnderlinePatterns.SINGLE);
+                            }
                         }
                     }
                 }
@@ -110,6 +122,6 @@ public class HakoCrawler extends Crawler {
         document.write(output);
         output.close();
         document.close();
-        System.out.println("Done UwU");
+        System.out.println(chapters.size() + " Chaps Done UwU");
     }
 }
