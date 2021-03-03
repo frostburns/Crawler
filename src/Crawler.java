@@ -28,6 +28,8 @@ public abstract class Crawler {
             setTitle();
             
             reader.close();
+
+            parseHTML();
         }
         catch(MalformedURLException e) {
             e.printStackTrace();
@@ -52,6 +54,9 @@ public abstract class Crawler {
 
     public String getLinkFrom(String line) {
         int begin = line.indexOf("href=\"") + 5;
+        if(begin == 4) {
+            begin = line.indexOf("src=\"") +4;
+        }
         int end = line.indexOf("\"", begin+1);
         return line.substring(begin+1, end);
     }
@@ -63,4 +68,6 @@ public abstract class Crawler {
     public List<String> getHTML() {
         return this.html;
     }
+
+    public abstract void parseHTML();
 }

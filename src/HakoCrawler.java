@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class HakoCrawler extends Crawler{
 
     private static final String prefix = "https://ln.hako.re";
@@ -9,11 +10,11 @@ public class HakoCrawler extends Crawler{
 
     public HakoCrawler(String novel) {
         super(novel);
-        this.chapters = new ArrayList<>();
-        this.novelTitle = getTitle().substring(0, getTitle().indexOf(" - Cổng Light Novel"));
+        this.novelTitle = super.getTitle().substring(0, super.getTitle().indexOf(" - Cổng Light Novel"));
     }
-
-    public void parseHTMLToChapters() {
+    
+    public void parseHTML() {
+        this.chapters = new ArrayList<>();
         boolean nextIsLink = false;
         for(String line: getHTML()) {
 
@@ -30,16 +31,18 @@ public class HakoCrawler extends Crawler{
 
     public void getChapterContent() {
         for(String chapter: chapters) {
-            
+            HakoChapterCrawler crawler = new HakoChapterCrawler(chapter);
+            return;
         }
+    }
+
+    public String getTitle() {
+        return this.novelTitle;
     }
 
     public static void main(String[] args) {
         HakoCrawler crawler = new HakoCrawler("https://ln.hako.re/truyen/8437-aria-san-ban-ben-thi-thoang-lai-tha-thinh-toi-bang-tieng-nga");
-        crawler.parseHTMLToChapters();
         System.out.println(crawler.novelTitle);
-        for(String chapter: crawler.chapters) {
-            System.out.println(chapter);
-        }
+        crawler.getChapterContent();
     }
 }
