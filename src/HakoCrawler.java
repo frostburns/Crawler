@@ -1,29 +1,55 @@
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.util.Units;
+import org.apache.poi.xwpf.usermodel.Document;
 import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
 
 public class HakoCrawler extends Crawler {
-
+    
     private static final String prefix = "https://ln.hako.re";
+    private List<String> html;
     private List<String> chapters;
-    private String novelTitle;
-
+    
     public HakoCrawler(String novel) throws IOException {
         super(novel);
-        this.novelTitle = super.getTitle().substring(0, super.getTitle().indexOf(" - Cổng Light Novel"));
+        for(String line: html) {
+            if(line.startsWith("<title>")) {
+                String title = line.substring(7, line.length()-8);
+                setTitle(title.substring(0, title.indexOf(" - Cổng Light Novel")));
+                break;
+            }
+        }
+        // System.out.println(getTitle());
     }
-
+    
+    public void parseURL(URLConnection uc) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(uc.getInputStream()));
+        html = new ArrayList<>();
+        String line = "";
+        while((line = reader.readLine()) != null) {
+            html.add(line);
+        }
+        reader.close();
+        
+        parseHTML();
+    }
+    
     public void parseHTML() {
-        this.chapters = new ArrayList<>();
+        chapters = new ArrayList<>();
         boolean nextIsLink = false;
-        for (String line : getHTML()) {
+        for (String line : html) {
 
             if (nextIsLink == true && line.startsWith("<a")) {
                 chapters.add(getLinkFrom(line, prefix));
@@ -36,11 +62,14 @@ public class HakoCrawler extends Crawler {
         }
     }
 
-    public void getChapterContent() throws IOException {
-        XWPFDocument document = new XWPFDocument();
-        FileOutputStream out = new FileOutputStream(new File(fileNameFilter(novelTitle) +".docx"));
+    public List<String> getHTML() {
+        return this.html;
+    }
 
-        for(String chapter: chapters) {
+    public void getChapterContent() throws IOException, InterruptedException, InvalidFormatException {
+        XWPFDocument document = new XWPFDocument();
+
+        for (String chapter : chapters) {
             HakoChapterCrawler crawler = new HakoChapterCrawler(chapter);
 
             XWPFParagraph paragraph = document.createParagraph();
@@ -49,30 +78,36 @@ public class HakoCrawler extends Crawler {
             run.setText(crawler.getTitle());
             run.setBold(true);
             run.setFontFamily("Times New Roman");
-            run.setFontSize(14);
-            
-            for(String line: crawler.getContent()) {
+            run.setFontSize(16);
+
+            for (String line : crawler.getContent()) {
                 paragraph = document.createParagraph();
                 run = paragraph.createRun();
-                run.setText(line);
-                run.setFontFamily("Times New Roman");
-                run.setFontSize(14);
+                if (line.startsWith("<img")) {
+                    ImageCrawler image = new ImageCrawler(getLinkFrom(line));
+                    run.addPicture(image.getInputStream(), Document.PICTURE_TYPE_JPEG, image.getTitle(),
+                                    Units.toEMU(450), Units.toEMU(450 / image.getAspectRatio()));
+                }
+                else {
+                    run.setText(line);
+                    run.setFontFamily("Times New Roman");
+                    run.setFontSize(12);
+                }
             }
+
+            TimeUnit.SECONDS.sleep(1);
         }
 
-        document.write(out);
-        out.close();
+        new File("hako.re/").mkdirs();
+        FileOutputStream output = new FileOutputStream(new File("hako.re/" + fileNameFilter(getTitle()) + ".doc"));
+        document.write(output);
+        output.close();
         document.close();
-        System.out.println("Done :3");
+        System.out.println("Done UwU");
     }
-
-    public String getTitle() {
-        return this.novelTitle;
-    }
-
-    public static void main(String[] args) throws IOException {
-        HakoCrawler crawler = new HakoCrawler("https://ln.hako.re/truyen/3660-2311");
-        System.out.println(crawler.novelTitle);
+    
+    public static void main(String[] args) throws IOException, InterruptedException, InvalidFormatException {
+        HakoCrawler crawler = new HakoCrawler("https://ln.hako.re/truyen/8437-aria-san-ban-ben-thi-thoang-lai-tha-thinh-toi-bang-tieng-nga");
         crawler.getChapterContent();
     }
 }

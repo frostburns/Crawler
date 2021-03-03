@@ -1,41 +1,20 @@
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.List;
 
 public abstract class Crawler {
 
-    private List<String> html;
     private String title;
 
     public Crawler(String link) throws IOException {
-        URL url= new URL(link);
-        URLConnection uc = url.openConnection();
+        URLConnection uc = new URL(link).openConnection();
         uc.addRequestProperty("User-Agent","Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)");
         uc.connect();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(uc.getInputStream()));
-        
-        this.html = new ArrayList<>();
-        String line = "";
-        while((line = reader.readLine()) != null) {
-            this.html.add(line);
-        }
-        setTitle();
-        parseHTML();
-        
-        reader.close();
+        parseURL(uc);
     }
     
-    private void setTitle() {
-        for(String line: html) {
-            if(line.startsWith("<title>")) {
-                title = line.substring(7, line.length()-8);
-                return;
-            }
-        }
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getTitle() {
@@ -55,10 +34,6 @@ public abstract class Crawler {
         return prefix + getLinkFrom(line);
     }
 
-    public List<String> getHTML() {
-        return this.html;
-    }
-
     public String fileNameFilter(String input) {
         StringBuilder sb = new StringBuilder(input);
         String[] chars = {"\\", "/", ":", "*", "?", "\"", "<", ">", "|"};
@@ -71,5 +46,17 @@ public abstract class Crawler {
         return sb.toString();
     }
 
-    public abstract void parseHTML();
+    public String convertBracket(String input) {
+        StringBuilder sb = new StringBuilder(input);
+        int i=0;
+        while((i = sb.indexOf("&lt;")) != -1) {
+            sb.replace(i, i+4, "<");
+        }
+        while((i = sb.indexOf("&gt;")) != -1) {
+            sb.replace(i, i+4, ">");
+        }
+        return sb.toString();
+    }
+
+    public abstract void parseURL(URLConnection uc) throws IOException;
 }

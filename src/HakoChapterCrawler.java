@@ -2,25 +2,29 @@ import java.util.ArrayList;
 import java.util.List;
 import java.io.IOException;
 
-public class HakoChapterCrawler extends Crawler {
+public class HakoChapterCrawler extends HakoCrawler {
 
-    private static final String prefix = "https://ln.hako.re";
     private List<String> content;
-    private String chapterTitle;
 
     public HakoChapterCrawler(String chapter) throws IOException {
         super(chapter);
-        this.chapterTitle = super.getTitle().substring(super.getTitle().indexOf(" - ")+3,
-        super.getTitle().indexOf(" - Cổng Light Novel"));
+        for(String line: getHTML()) {
+            if(line.startsWith("<title>")) {
+                String title = line.substring(7, line.length()-8);
+                setTitle(title.substring(title.indexOf(" - ")+3, title.indexOf(" - Cổng Light Novel")));
+                break;
+            }
+        }
+        // System.out.println(getTitle());
     }
     
     public void parseHTML() {
-        this.content = new ArrayList<>();
+        content = new ArrayList<>();
         List<String> html = getHTML();
         for(int i=0; i<html.size(); ++i) {
             if(html.get(i).equals("<div id=\"chapter-content\" class=\"long-text no-select\">")) {
                 for(String line: html.get(i+1).split("</p><p id=\"[0-9]+\">")) {
-                    content.add(line);
+                    content.add(convertBracket(line));
                 }
 
                 String line = content.get(0);
@@ -28,17 +32,9 @@ public class HakoChapterCrawler extends Crawler {
                 line = content.get(content.size()-1);
                 content.set(content.size()-1, line.substring(0, line.length()-4));
 
-                // for(String l: content) {
-                //     System.out.println(l);
-                // }
-
                 return;
             }
         }
-    }
-
-    public String getTitle() {
-        return this.chapterTitle;
     }
 
     public List<String> getContent() {
