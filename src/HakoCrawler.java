@@ -82,16 +82,23 @@ public class HakoCrawler extends Crawler {
 
             for (String line : crawler.getContent()) {
                 paragraph = document.createParagraph();
-                run = paragraph.createRun();
                 if (line.startsWith("<img")) {
                     ImageCrawler image = new ImageCrawler(getLinkFrom(line));
+                    run = paragraph.createRun();
                     run.addPicture(image.getInputStream(), Document.PICTURE_TYPE_JPEG, image.getTitle(),
                                     Units.toEMU(450), Units.toEMU(450 / image.getAspectRatio()));
                 }
                 else {
-                    run.setText(line);
-                    run.setFontFamily("Times New Roman");
-                    run.setFontSize(12);
+                    List<Text> sentences = Text.parseToText(line);
+                    for(Text sentence: sentences) {
+                        if(sentence != null) {
+                            run = paragraph.createRun();
+                            run.setText(sentence.getText());
+                            run.setFontFamily("Times New Roman");
+                            run.setBold(sentence.isBold());
+                            run.setItalic(sentence.isItalic());
+                        }
+                    }
                 }
             }
 
@@ -104,10 +111,5 @@ public class HakoCrawler extends Crawler {
         output.close();
         document.close();
         System.out.println("Done UwU");
-    }
-    
-    public static void main(String[] args) throws IOException, InterruptedException, InvalidFormatException {
-        HakoCrawler crawler = new HakoCrawler("https://ln.hako.re/truyen/8437-aria-san-ban-ben-thi-thoang-lai-tha-thinh-toi-bang-tieng-nga");
-        crawler.getChapterContent();
     }
 }
