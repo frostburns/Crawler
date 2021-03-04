@@ -16,6 +16,7 @@ public abstract class Crawler {
                 uc.addRequestProperty("User-Agent","Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)");
                 uc.connect();
                 parseURL(uc);
+                initTitle();
                 break;
             }
             catch(IOException e) {
@@ -47,5 +48,6 @@ public abstract class Crawler {
         return sb.toString();
     }
 
+    public abstract void initTitle();
     public abstract void parseURL(URLConnection uc) throws IOException;
 }

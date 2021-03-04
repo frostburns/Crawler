@@ -20,13 +20,8 @@ public class HakoCrawler extends HTMLCrawler {
     
     public HakoCrawler(String novel) throws InterruptedException, IOException {
         super(novel);
-        for(String line: getHTML()) {
-            if(line.startsWith("<title>")) {
-                String title = line.substring(7, line.length()-8);
-                setTitle(title.substring(0, title.indexOf(" - Cổng Light Novel")));
-                break;
-            }
-        }
+        String title = getTitle();
+        setTitle(title.substring(0, title.indexOf(" - Cổng Light Novel")));
         // System.out.println(getTitle());
     }
     
@@ -64,14 +59,14 @@ public class HakoCrawler extends HTMLCrawler {
                 paragraph = document.createParagraph();
                 if (line.startsWith("<img")) {
                     run = paragraph.createRun();
+                    ImageCrawler image = new ImageCrawler(getLinkFrom(line));
                     try {
-                        ImageCrawler image = new ImageCrawler(getLinkFrom(line));
                         int width = Math.min(450, image.getWidth());
                         run.addPicture(image.getInputStream(), image.getImageType(), image.getTitle(),
                                         Units.toEMU(width), Units.toEMU(width / image.getAspectRatio()));
                     }
                     catch (NullPointerException e) {
-                        run.setText("Ảnh lỗi cmnr T_T");
+                        run.setText("[Ảnh lỗi cmnr T_T] " + image.getTitle());
                         run.setFontFamily("Times New Roman");
                         run.setFontSize(10);
                     }

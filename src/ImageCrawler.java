@@ -18,9 +18,16 @@ public class ImageCrawler extends Crawler {
     public ImageCrawler(String link) throws InterruptedException, IOException {
         super(link);
         this.link = link;
-        setTitle(link.substring(link.lastIndexOf("/")+1));
         setImageType(link.substring(link.lastIndexOf(".")));
         System.out.println(getTitle());
+    }
+
+    public void parseURL(URLConnection uc) throws IOException {
+        this.image = ImageIO.read(new BufferedInputStream(uc.getInputStream()));
+    }
+
+    public void initTitle() {
+        setTitle(link.substring(link.lastIndexOf("/")+1));
     }
 
     private void setImageType(String suffix) {
@@ -34,10 +41,6 @@ public class ImageCrawler extends Crawler {
 
     public int getImageType() {
         return this.imageType;
-    }
-
-    public void parseURL(URLConnection uc) throws IOException {
-        this.image = ImageIO.read(new BufferedInputStream(uc.getInputStream()));
     }
 
     public InputStream getInputStream() throws IOException {

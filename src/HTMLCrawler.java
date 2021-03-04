@@ -24,6 +24,15 @@ public abstract class HTMLCrawler extends Crawler {
         
         parseHTML();
     }
+
+    public void initTitle() {
+        for(String line: html) {
+            if(line.startsWith("<title>")) {
+                setTitle(line.substring(7, line.length()-8));
+                break;
+            }
+        }
+    }
     
     public abstract void parseHTML();
 
