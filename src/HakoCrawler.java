@@ -20,8 +20,13 @@ public class HakoCrawler extends HTMLCrawler {
     
     public HakoCrawler(String novel) throws InterruptedException, IOException {
         super(novel);
-        String title = getTitle();
-        setTitle(title.substring(0, title.indexOf(" - Cổng Light Novel")));
+        for(String line: getHTML()) {
+            if(line.startsWith("<title>")) {
+                String title = line.substring(7, line.length()-8);
+                setTitle(title.substring(0, title.indexOf(" - Cổng Light Novel")));
+                break;
+            }
+        }
         // System.out.println(getTitle());
     }
     

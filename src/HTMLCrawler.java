@@ -11,13 +11,6 @@ public abstract class HTMLCrawler extends Crawler {
     
     public HTMLCrawler(String link) throws InterruptedException, IOException {
         super(link);
-        for(String line: html) {
-            if(line.startsWith("<title>")) {
-                String title = line.substring(7, line.length()-8);
-                setTitle(title);
-                break;
-            }
-        }
     }
     
     public void parseURL(URLConnection uc) throws IOException {
