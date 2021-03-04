@@ -1,9 +1,6 @@
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -16,40 +13,22 @@ import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
 
-public class HakoCrawler extends Crawler {
+public class HakoCrawler extends HTMLCrawler {
     
     private static final String prefix = "https://ln.hako.re";
-    private List<String> html;
     private List<String> chapters;
     
     public HakoCrawler(String novel) throws InterruptedException, IOException {
         super(novel);
-        for(String line: html) {
-            if(line.startsWith("<title>")) {
-                String title = line.substring(7, line.length()-8);
-                setTitle(title.substring(0, title.indexOf(" - Cổng Light Novel")));
-                break;
-            }
-        }
+        String title = getTitle();
+        setTitle(title.substring(0, title.indexOf(" - Cổng Light Novel")));
         // System.out.println(getTitle());
-    }
-    
-    public void parseURL(URLConnection uc) throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(uc.getInputStream()));
-        html = new ArrayList<>();
-        String line = "";
-        while((line = reader.readLine()) != null) {
-            html.add(line);
-        }
-        reader.close();
-        
-        parseHTML();
     }
     
     public void parseHTML() {
         chapters = new ArrayList<>();
         boolean nextIsLink = false;
-        for (String line : html) {
+        for (String line : getHTML()) {
 
             if (nextIsLink == true && line.startsWith("<a")) {
                 chapters.add(getLinkFrom(line, prefix));
@@ -60,10 +39,6 @@ public class HakoCrawler extends Crawler {
                 nextIsLink = true;
             }
         }
-    }
-
-    public List<String> getHTML() {
-        return this.html;
     }
 
     public void getChapterContent() throws IOException, InterruptedException, InvalidFormatException {
