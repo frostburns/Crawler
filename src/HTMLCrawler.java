@@ -9,7 +9,7 @@ public abstract class HTMLCrawler extends Crawler {
     
     private List<String> html;
     
-    public HTMLCrawler(String link) throws InterruptedException, IOException {
+    public HTMLCrawler(String link) throws IOException {
         super(link);
     }
     
@@ -40,7 +40,7 @@ public abstract class HTMLCrawler extends Crawler {
         return this.html;
     }
 
-    public String convertBracket(String input) {
+    public static String convertBracket(String input) {
         StringBuilder sb = new StringBuilder(input);
         int i=0;
         while((i = sb.indexOf("&lt;")) != -1) {
@@ -51,17 +51,25 @@ public abstract class HTMLCrawler extends Crawler {
         }
         return sb.toString();
     }
-
-    public String getLinkFrom(String line) {
-        int begin = line.indexOf("href=\"") + 5;
+    
+    public static String getLinkFrom(String line, char bracket) {
+        int begin = line.indexOf("href=" + bracket) + 5;
         if(begin == 4) {
-            begin = line.indexOf("src=\"") +4;
+            begin = line.indexOf("src=" + bracket) +4;
         }
-        int end = line.indexOf("\"", begin+1);
+        int end = line.indexOf(bracket, begin+1);
         return line.substring(begin+1, end);
     }
 
-    public String getLinkFrom(String line, String prefix) {
+    public static String getLinkFrom(String line) {
+        return getLinkFrom(line, '\"');
+    }
+
+    public static String getLinkFrom(String line, String prefix) {
         return prefix + getLinkFrom(line);
+    }
+
+    public static String getLinkFrom(String line, String prefix, char bracket) {
+        return prefix + getLinkFrom(line, bracket);
     }
 }

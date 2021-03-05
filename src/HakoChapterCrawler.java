@@ -6,7 +6,7 @@ public class HakoChapterCrawler extends HTMLCrawler {
 
     private List<String> content;
 
-    public HakoChapterCrawler(String chapter) throws InterruptedException, IOException {
+    public HakoChapterCrawler(String chapter) throws IOException {
         super(chapter);
         String title = getTitle();
         setTitle(title.substring(title.indexOf(" - ")+3, title.indexOf(" - Cổng Light Novel")));

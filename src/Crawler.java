@@ -8,7 +8,7 @@ public abstract class Crawler {
     private static final int threshold = 5;
     private String title;
 
-    public Crawler(String link) throws InterruptedException, IOException {
+    public Crawler(String link) throws IOException {
         int count = 0;
         while(true) {
             try {
@@ -23,7 +23,12 @@ public abstract class Crawler {
                 if(++count == threshold) {
                     throw e;
                 }
-                TimeUnit.SECONDS.sleep(10);
+                try {
+                    TimeUnit.SECONDS.sleep(10);
+                }
+                catch(InterruptedException ex) {
+                    ex.printStackTrace();
+                }
             }
         }
     }
@@ -36,7 +41,7 @@ public abstract class Crawler {
         return this.title;
     }
 
-    public String fileNameFilter(String input) {
+    public static String fileNameFilter(String input) {
         StringBuilder sb = new StringBuilder(input);
         String[] chars = {"\\", "/", ":", "*", "?", "\"", "<", ">", "|"};
         for(String c: chars) {

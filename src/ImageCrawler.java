@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.net.URL;
 import java.net.URLConnection;
 import java.awt.image.BufferedImage;
@@ -15,7 +16,7 @@ public class ImageCrawler extends Crawler {
     private String link;
     private int imageType;
     
-    public ImageCrawler(String link) throws InterruptedException, IOException {
+    public ImageCrawler(String link) throws IOException {
         super(link);
         this.link = link;
         setImageType(link.substring(link.lastIndexOf(".")));
@@ -41,6 +42,14 @@ public class ImageCrawler extends Crawler {
 
     public int getImageType() {
         return this.imageType;
+    }
+
+    public void save(String dir) throws IOException {
+        this.save(dir, getTitle());
+    }
+
+    public void save(String dir, String fileName) throws IOException {
+        ImageIO.write(image, "jpg", new File(Crawler.fileNameFilter(fileName)));
     }
 
     public InputStream getInputStream() throws IOException {

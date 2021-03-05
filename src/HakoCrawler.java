@@ -18,11 +18,11 @@ public class HakoCrawler extends HTMLCrawler {
     private static final String prefix = "https://ln.hako.re";
     private List<String> chapters;
     
-    public HakoCrawler(String novel) throws InterruptedException, IOException {
+    public HakoCrawler(String novel) throws IOException {
         super(novel);
         String title = getTitle();
         setTitle(title.substring(0, title.indexOf(" - Cổng Light Novel")));
-        // System.out.println(getTitle());
+        System.out.println(getTitle());
     }
     
     public void parseHTML() {
@@ -41,7 +41,7 @@ public class HakoCrawler extends HTMLCrawler {
         }
     }
 
-    public void getChapterContent() throws IOException, InterruptedException, InvalidFormatException {
+    public void getChapterContent() throws IOException {
         XWPFDocument document = new XWPFDocument();
 
         for (String chapter : chapters) {
@@ -65,10 +65,13 @@ public class HakoCrawler extends HTMLCrawler {
                         run.addPicture(image.getInputStream(), image.getImageType(), image.getTitle(),
                                         Units.toEMU(width), Units.toEMU(width / image.getAspectRatio()));
                     }
-                    catch (NullPointerException e) {
+                    catch(NullPointerException e) {
                         run.setText("[Ảnh lỗi cmnr T_T] " + image.getTitle());
                         run.setFontFamily("Times New Roman");
                         run.setFontSize(10);
+                    }
+                    catch(InvalidFormatException e) {
+                        e.printStackTrace();
                     }
                 }
                 else {
@@ -89,7 +92,12 @@ public class HakoCrawler extends HTMLCrawler {
                 }
             }
 
-            TimeUnit.SECONDS.sleep(1);
+            try {
+                TimeUnit.SECONDS.sleep(1);
+            }
+            catch(InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
         new File("hako.re/").mkdirs();
