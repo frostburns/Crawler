@@ -7,26 +7,29 @@ public abstract class Crawler {
 
     private static final int threshold = 5;
     private String title;
+    private String link;
 
     public Crawler(String link) throws IOException {
+        this.link = link;
         int count = 0;
         while(true) {
             try {
                 URLConnection uc = new URL(link).openConnection();
-                uc.addRequestProperty("User-Agent","Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)");
+                uc.addRequestProperty("User-Agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.36");
                 uc.connect();
                 parseURL(uc);
                 initTitle();
                 break;
             }
             catch(IOException e) {
-                if(++count == threshold) {
+                System.out.println(e.getMessage());
+                if (++count == threshold) {
                     throw e;
                 }
                 try {
                     TimeUnit.SECONDS.sleep(10);
                 }
-                catch(InterruptedException ex) {
+                catch (InterruptedException ex) {
                     ex.printStackTrace();
                 }
             }
@@ -39,6 +42,10 @@ public abstract class Crawler {
 
     public String getTitle() {
         return this.title;
+    }
+
+    public String getLink() {
+        return this.link;
     }
 
     public static String fileNameFilter(String input) {

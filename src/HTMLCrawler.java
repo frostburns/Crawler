@@ -27,8 +27,8 @@ public abstract class HTMLCrawler extends Crawler {
 
     public void initTitle() {
         for(String line: html) {
-            if(line.startsWith("<title>")) {
-                setTitle(line.substring(7, line.length()-8));
+            if(line.contains("<title>")) {
+                setTitle(line.substring(line.indexOf("<title>")+7, line.length()-8));
                 break;
             }
         }
