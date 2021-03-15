@@ -17,7 +17,7 @@ public class NettruyenChapterCrawler extends HTMLCrawler {
         for(String line: getHTML()) {
             if(line.startsWith("<div id='page_1'")) {
                 for(String link: line.split("</div><div")) {
-                    content.add(HTMLCrawler.getLinkFrom(link, prefix, '\''));
+                    content.add(getLinkFrom(link, prefix, '\''));
                 }
                 return;
             }
