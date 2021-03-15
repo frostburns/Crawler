@@ -16,7 +16,7 @@ public class NettruyenCrawler extends HTMLCrawler {
         boolean nextIsLink = false;
         for (String line : getHTML()) {
 
-            if (nextIsLink == true && line.startsWith("<a")) {
+            if (nextIsLink == true && line.contains("<a")) {
                 chapters.add(getLinkFrom(line));
                 nextIsLink = false;
             }

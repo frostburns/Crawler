@@ -10,6 +10,7 @@ public abstract class Crawler {
     private String link;
 
     public Crawler(String link) throws IOException {
+        // System.out.println(link);
         this.link = link;
         int count = 0;
         while(true) {

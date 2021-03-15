@@ -39,37 +39,37 @@ public abstract class HTMLCrawler extends Crawler {
     public List<String> getHTML() {
         return this.html;
     }
+    
+    public static String getLinkFrom(String line) {
 
-    public static String convertBracket(String input) {
-        StringBuilder sb = new StringBuilder(input);
-        int i=0;
-        while((i = sb.indexOf("&lt;")) != -1) {
-            sb.replace(i, i+4, "<");
+        int begin = line.indexOf("href=") + 6;
+        if(begin == 5) {
+            begin = line.indexOf("src=") +5;
         }
-        while((i = sb.indexOf("&gt;")) != -1) {
-            sb.replace(i, i+4, ">");
+
+        char bracket = '\"';
+        if (line.contains("href=\'") || line.contains("src=\'")) {
+            bracket = '\'';
         }
-        return sb.toString();
+        
+        int end = line.indexOf(bracket, begin);
+        return line.substring(begin, end);
     }
     
-    public static String getLinkFrom(String line, char bracket) {
-        int begin = line.indexOf("href=" + bracket) + 5;
-        if(begin == 4) {
-            begin = line.indexOf("src=" + bracket) +4;
-        }
-        int end = line.indexOf(bracket, begin+1);
-        return line.substring(begin+1, end);
-    }
+    public static String getAltFrom(String line) {
 
-    public static String getLinkFrom(String line) {
-        return getLinkFrom(line, '\"');
+        int begin = line.indexOf("alt=") + 5;
+
+        char bracket = '\"';
+        if (line.contains("alt=\'")) {
+            bracket = '\'';
+        }
+
+        int end = line.indexOf(bracket, begin);
+        return line.substring(begin, end);
     }
 
     public static String getLinkFrom(String line, String prefix) {
         return prefix + getLinkFrom(line);
-    }
-
-    public static String getLinkFrom(String line, String prefix, char bracket) {
-        return prefix + getLinkFrom(line, bracket);
     }
 }

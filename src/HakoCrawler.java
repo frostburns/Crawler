@@ -30,7 +30,7 @@ public class HakoCrawler extends HTMLCrawler {
         boolean nextIsLink = false;
         for (String line : getHTML()) {
 
-            if (nextIsLink == true && line.startsWith("<a")) {
+            if (nextIsLink == true && line.contains("<a")) {
                 chapters.add(getLinkFrom(line, prefix));
                 nextIsLink = false;
             }
@@ -57,7 +57,7 @@ public class HakoCrawler extends HTMLCrawler {
 
             for (String line : crawler.getContent()) {
                 paragraph = document.createParagraph();
-                if (line.startsWith("<img")) {
+                if (line.contains("<img")) {
                     run = paragraph.createRun();
                     ImageCrawler image = new ImageCrawler(getLinkFrom(line));
                     try {

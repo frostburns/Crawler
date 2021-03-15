@@ -4,14 +4,14 @@ import java.util.List;
 
 public class NovelupdatesCrawler extends HTMLCrawler {
 
-    private static final String prefix = "http:";
+    private static final String prefix = "https:";
     private List<String> chapters;
     
     public NovelupdatesCrawler(String novel) throws IOException {
         super(novel);
-        String title = getTitle();
-        setTitle(title.substring(0, title.indexOf(" - Novel Updates")));
-        System.out.println(getTitle());
+        // String title = getTitle();
+        // setTitle(title.substring(0, title.indexOf(" - Novel Updates")));
+        // System.out.println(getTitle());
     }
     
     public void parseHTML() {

@@ -19,7 +19,7 @@ public class HakoChapterCrawler extends HTMLCrawler {
         for(int i=0; i<html.size(); ++i) {
             if(html.get(i).equals("<div id=\"chapter-content\" class=\"long-text no-select\">")) {
                 for(String line: html.get(i+1).split("</p><p id=\"[0-9]+\">")) {
-                    content.add(convertBracket(line));
+                    content.add(line);
                 }
 
                 String line = content.get(0);

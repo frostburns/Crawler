@@ -1,5 +1,9 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.text.StringEscapeUtils;
 
 public class Text {
 
@@ -58,6 +62,8 @@ public class Text {
     }
 
     public static List<Text> parseText(String line) {
+        line = StringEscapeUtils.unescapeHtml4(line);
+        // System.out.println(line);
         List<Text> ret = new ArrayList<>();
         for(int i=0; i<line.length(); ++i) {
             ret.add(new Text(line.substring(i, i+1)));
@@ -81,6 +87,34 @@ public class Text {
         
         i = 0;
         begin = 0;
+        while((i = line.indexOf("<b>", begin)) != -1) {
+            int j = line.indexOf("</b>", begin);
+            for(int index=i+3; index<j; ++index) {
+                ret.get(index).setBold(true);
+            }
+            begin = j+4;
+            toRemove.add(i);
+            toRemove.add(i+3);
+            toRemove.add(j);
+            toRemove.add(j+4);
+        }
+        
+        i = 0;
+        begin = 0;
+        while((i = line.indexOf("<h", begin)) != -1) {
+            int j = line.indexOf("</h", begin);
+            for(int index=i+3; index<j; ++index) {
+                ret.get(index).setBold(true);
+            }
+            begin = j+5;
+            toRemove.add(i);
+            toRemove.add(i+4);
+            toRemove.add(j);
+            toRemove.add(j+5);
+        }
+        
+        i = 0;
+        begin = 0;
         while((i = line.indexOf("<em>", begin)) != -1) {
             int j = line.indexOf("</em>", begin);
             for(int index=i+4; index<j; ++index) {
@@ -91,6 +125,20 @@ public class Text {
             toRemove.add(i+4);
             toRemove.add(j);
             toRemove.add(j+5);
+        }
+        
+        i = 0;
+        begin = 0;
+        while((i = line.indexOf("<i>", begin)) != -1) {
+            int j = line.indexOf("</i>", begin);
+            for(int index=i+3; index<j; ++index) {
+                ret.get(index).setItalic(true);
+            }
+            begin = j+4;
+            toRemove.add(i);
+            toRemove.add(i+3);
+            toRemove.add(j);
+            toRemove.add(j+4);
         }
         
         i = 0;
@@ -107,9 +155,34 @@ public class Text {
             toRemove.add(j+4);
         }
 
+        i = 0;
+        begin = 0;
+        while((i = line.indexOf("<p", begin)) != -1) {
+            int j = line.indexOf("</p>", begin);
+            begin = j+4;
+            toRemove.add(i);
+            toRemove.add(line.indexOf(">", i) + 1);
+            toRemove.add(j);
+            toRemove.add(j+4);
+        }
+
+        i = 0;
+        begin = 0;
+        while((i = line.indexOf("<span", begin)) != -1) {
+            int j = line.indexOf("</span>", begin);
+            begin = j+7;
+            toRemove.add(i);
+            toRemove.add(line.indexOf(">", i) + 1);
+            toRemove.add(j);
+            toRemove.add(j+7);
+        }
+
+        i = 0;
         for(i=0; i<toRemove.size(); i+=2) {
             begin = toRemove.get(i);
             int end = toRemove.get(i+1);
+            // System.out.println(begin + "\t" + end);
+
             for(int index=begin; index<end; ++index) {
                 ret.set(index, null);
             }

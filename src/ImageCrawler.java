@@ -13,12 +13,10 @@ import org.apache.poi.xwpf.usermodel.Document;
 public class ImageCrawler extends Crawler {
 
     private BufferedImage image;
-    private String link;
     private int imageType;
     
     public ImageCrawler(String link) throws IOException {
         super(link);
-        this.link = link;
         setImageType(link.substring(link.lastIndexOf(".")));
         System.out.println(getTitle());
     }
@@ -28,7 +26,7 @@ public class ImageCrawler extends Crawler {
     }
 
     public void initTitle() {
-        setTitle(link.substring(link.lastIndexOf("/")+1));
+        setTitle(getLink().substring(getLink().lastIndexOf("/")+1));
     }
 
     private void setImageType(String suffix) {
@@ -53,7 +51,7 @@ public class ImageCrawler extends Crawler {
     }
 
     public InputStream getInputStream() throws IOException {
-        URLConnection uc = new URL(link).openConnection();
+        URLConnection uc = new URL(getLink()).openConnection();
         uc.addRequestProperty("User-Agent","Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)");
         uc.connect();
         return uc.getInputStream();
