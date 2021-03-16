@@ -154,6 +154,7 @@ public class Text {
         unusedTags.add("<span");
         unusedTags.add("</span");
         unusedTags.add("<br");
+        unusedTags.add("<a");
         
         for (String tag: unusedTags) {
             i = 0;
