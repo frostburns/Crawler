@@ -153,6 +153,8 @@ public class Text {
         unusedTags.add("</p");
         unusedTags.add("<span");
         unusedTags.add("</span");
+        unusedTags.add("<sub");
+        unusedTags.add("</sub");
         unusedTags.add("<br");
         unusedTags.add("<a");
         
