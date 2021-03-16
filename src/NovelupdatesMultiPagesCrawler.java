@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
+// import java.util.concurrent.TimeUnit;
 
 import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
 import org.apache.poi.xwpf.usermodel.UnderlinePatterns;
@@ -89,12 +89,12 @@ public class NovelupdatesMultiPagesCrawler extends HTMLCrawler {
                 }
             }
 
-            try {
-                TimeUnit.SECONDS.sleep(1);
-            }
-            catch(InterruptedException e) {
-                e.printStackTrace();
-            }
+            // try {
+            //     TimeUnit.SECONDS.sleep(1);
+            // }
+            // catch(InterruptedException e) {
+            //     e.printStackTrace();
+            // }
         }
 
         new File("novelupdates/").mkdirs();

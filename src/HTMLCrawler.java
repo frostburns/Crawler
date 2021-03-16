@@ -59,6 +59,9 @@ public abstract class HTMLCrawler extends Crawler {
     public static String getAltFrom(String line) {
 
         int begin = line.indexOf("alt=") + 5;
+        if(begin == 4) {
+            return "";
+        }
 
         char bracket = '\"';
         if (line.contains("alt=\'")) {

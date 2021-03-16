@@ -83,7 +83,6 @@ public class Text {
             toRemove.add(j+9);
         }
         
-        i = 0;
         begin = 0;
         while((i = line.indexOf("<b>", begin)) != -1) {
             int j = line.indexOf("</b>", begin);
@@ -97,7 +96,6 @@ public class Text {
             toRemove.add(j+4);
         }
         
-        i = 0;
         begin = 0;
         while((i = line.indexOf("<h", begin)) != -1) {
             int j = line.indexOf("</h", begin);
@@ -111,7 +109,6 @@ public class Text {
             toRemove.add(j+5);
         }
         
-        i = 0;
         begin = 0;
         while((i = line.indexOf("<em>", begin)) != -1) {
             int j = line.indexOf("</em>", begin);
@@ -125,7 +122,6 @@ public class Text {
             toRemove.add(j+5);
         }
         
-        i = 0;
         begin = 0;
         while((i = line.indexOf("<i>", begin)) != -1) {
             int j = line.indexOf("</i>", begin);
@@ -139,7 +135,6 @@ public class Text {
             toRemove.add(j+4);
         }
         
-        i = 0;
         begin = 0;
         while((i = line.indexOf("<u>", begin)) != -1) {
             int j = line.indexOf("</u>", begin);
@@ -153,29 +148,21 @@ public class Text {
             toRemove.add(j+4);
         }
 
-        i = 0;
-        begin = 0;
-        while((i = line.indexOf("<p", begin)) != -1) {
-            int j = line.indexOf("</p>", begin);
-            begin = j+4;
-            toRemove.add(i);
-            toRemove.add(line.indexOf(">", i) + 1);
-            toRemove.add(j);
-            toRemove.add(j+4);
+        List<String> unusedTags = new ArrayList<>();
+        unusedTags.add("<p");
+        unusedTags.add("</p");
+        unusedTags.add("<span");
+        unusedTags.add("</span");
+        unusedTags.add("<br");
+        
+        for (String tag: unusedTags) {
+            i = 0;
+            while((i = line.indexOf(tag, i)) != -1) {
+                toRemove.add(i);
+                toRemove.add(i = line.indexOf(">", i)+1);
+            }
         }
 
-        i = 0;
-        begin = 0;
-        while((i = line.indexOf("<span", begin)) != -1) {
-            int j = line.indexOf("</span>", begin);
-            begin = j+7;
-            toRemove.add(i);
-            toRemove.add(line.indexOf(">", i) + 1);
-            toRemove.add(j);
-            toRemove.add(j+7);
-        }
-
-        i = 0;
         for(i=0; i<toRemove.size(); i+=2) {
             begin = toRemove.get(i);
             int end = toRemove.get(i+1);

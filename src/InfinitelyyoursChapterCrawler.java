@@ -25,11 +25,6 @@ public class InfinitelyyoursChapterCrawler extends HTMLCrawler {
             if (line.contains("<div id=") && isParsing == 2) {
                 break;
             }
-
-            if (line.contains("<br />") && isParsing == 2) {
-                content.add("");
-                continue;
-            }
             
             if (isParsing == 2) {
                 content.add(line);
