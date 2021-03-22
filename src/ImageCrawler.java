@@ -21,8 +21,13 @@ public class ImageCrawler extends Crawler {
         System.out.println(getTitle());
     }
 
-    public void parseURL(URLConnection uc) throws IOException {
-        this.image = ImageIO.read(new BufferedInputStream(uc.getInputStream()));
+    public void parseURL(URLConnection uc) {
+        try {
+            this.image = ImageIO.read(new BufferedInputStream(uc.getInputStream()));
+        }
+        catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     public void initTitle() {
