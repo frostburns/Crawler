@@ -13,7 +13,7 @@ import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
 
-public class HakoCrawler extends HTMLCrawler {
+public class HakoCrawler extends HTMLCrawler implements NovelCrawler {
     
     private static final String prefix = "https://ln.hako.re";
     private List<String> chapters;

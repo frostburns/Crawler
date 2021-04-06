@@ -12,7 +12,7 @@ import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
 
-public class NovelupdatesMultiPagesCrawler extends HTMLCrawler {
+public class NovelupdatesMultiPagesCrawler extends HTMLCrawler implements NovelCrawler {
 
     private List<String> chapters;
     

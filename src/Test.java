@@ -1,11 +1,9 @@
 import java.io.IOException;
 
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-
 public class Test {
     
-    public static void main(String[] args) throws IOException, InterruptedException, InvalidFormatException {
-        NovelupdatesMultiPagesCrawler crawler = new NovelupdatesMultiPagesCrawler("https://www.novelupdates.com/series/2311/");
+    public static void main(String[] args) throws IOException {
+        NovelCrawler crawler = new HakoCrawler("https://ln.hako.re/truyen/4012-hello-hello-and-hello/t7137-hello-hello-and-hello");
         crawler.getChapterContent();
     }
 }
