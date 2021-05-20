@@ -12,11 +12,11 @@ import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
 
-public class NovelupdatesMultiPagesCrawler extends HTMLCrawler implements NovelCrawler {
+public class InfinitelyyoursCrawler extends HTMLCrawler implements NovelCrawler {
 
     private List<String> chapters;
     
-    public NovelupdatesMultiPagesCrawler(String novel) throws IOException {
+    public InfinitelyyoursCrawler(String novel) throws IOException {
         super(novel);
         String title = getTitle();
         setTitle(title.substring(0, title.indexOf(" - Novel Updates")));
@@ -60,7 +60,7 @@ public class NovelupdatesMultiPagesCrawler extends HTMLCrawler implements NovelC
             XWPFParagraph paragraph = document.createParagraph();
             paragraph.setAlignment(ParagraphAlignment.CENTER);
             XWPFRun run = paragraph.createRun();
-            run.setText(crawler.getTitle());
+            run.setText(crawler.getTitle() + '\n');
             run.setBold(true);
             run.setFontFamily("Times New Roman");
             run.setFontSize(16);

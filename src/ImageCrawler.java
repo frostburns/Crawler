@@ -57,7 +57,7 @@ public class ImageCrawler extends Crawler {
 
     public InputStream getInputStream() throws IOException {
         URLConnection uc = new URL(getLink()).openConnection();
-        uc.addRequestProperty("User-Agent","Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)");
+        uc.addRequestProperty("User-Agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.36");
         uc.connect();
         return uc.getInputStream();
     }

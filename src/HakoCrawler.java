@@ -50,7 +50,7 @@ public class HakoCrawler extends HTMLCrawler implements NovelCrawler {
             XWPFParagraph paragraph = document.createParagraph();
             paragraph.setAlignment(ParagraphAlignment.CENTER);
             XWPFRun run = paragraph.createRun();
-            run.setText(crawler.getTitle());
+            run.setText(crawler.getTitle() + '\n');
             run.setBold(true);
             run.setFontFamily("Times New Roman");
             run.setFontSize(16);

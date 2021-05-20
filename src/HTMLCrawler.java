@@ -5,6 +5,8 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.text.StringEscapeUtils;
+
 public abstract class HTMLCrawler extends Crawler {
     
     private List<String> html;
@@ -28,7 +30,8 @@ public abstract class HTMLCrawler extends Crawler {
     public void initTitle() {
         for(String line: html) {
             if(line.contains("<title>")) {
-                setTitle(line.substring(line.indexOf("<title>")+7, line.length()-8));
+                String title = line.substring(line.indexOf("<title>")+7, line.length()-8);
+                setTitle(StringEscapeUtils.unescapeHtml4(title));
                 break;
             }
         }

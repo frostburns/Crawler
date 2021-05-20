@@ -9,9 +9,6 @@ public class NovelupdatesCrawler extends HTMLCrawler {
     
     public NovelupdatesCrawler(String novel) throws IOException {
         super(novel);
-        // String title = getTitle();
-        // setTitle(title.substring(0, title.indexOf(" - Novel Updates")));
-        // System.out.println(getTitle());
     }
     
     public void parseHTML() {

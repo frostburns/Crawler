@@ -50,8 +50,9 @@ public class Text {
     }
 
     public static List<Text> parsePlainText(String line) {
+        line = StringEscapeUtils.unescapeHtml4(line);
         List<Text> ret = new ArrayList<>();
-        
+
         for(String sentence: line.split("<[/a-z]+>")) {
             ret.add(new Text(sentence));
         }
@@ -61,8 +62,8 @@ public class Text {
 
     public static List<Text> parseText(String line) {
         line = StringEscapeUtils.unescapeHtml4(line);
-        // System.out.println(line);
         List<Text> ret = new ArrayList<>();
+        
         for(int i=0; i<line.length(); ++i) {
             ret.add(new Text(line.substring(i, i+1)));
         }
